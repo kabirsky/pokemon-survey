@@ -25,6 +25,10 @@ export default withTRPC<AppRouter>({
 
     return {
       url,
+      headers: {
+        // optional - inform server that it's an ssr request
+        "x-ssr": "1",
+      },
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
@@ -34,5 +38,5 @@ export default withTRPC<AppRouter>({
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: true,
+  ssr: false,
 })(MyApp);
