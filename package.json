@@ -10,7 +10,8 @@
     "generate": "prisma generate",
     "backend": "pscale connect pokemon-survey main --port 3309",
     "shadow": "pscale connect pokemon-survey main --port 3310",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "dbview": "prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
