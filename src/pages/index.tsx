@@ -37,7 +37,6 @@ const Home = (
     "get-pokemon-by-id",
     { id: secondId },
   ]);
-  console.log(firstPokemon);
 
   return (
     <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
