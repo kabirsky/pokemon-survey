@@ -4,29 +4,54 @@ import { getOptionsForVote } from "@/utils/getRandomPokemon";
 import { trpc } from "@/utils/trpc";
 import { appRouter } from "@/backend/router";
 import { inferQueryResponse } from "./api/trpc/[trpc]";
+import { useState } from "react";
 
 const btn =
   "inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2, focus:ring-indigo-500";
 
 type PokemonFromServer = inferQueryResponse<"get-pokemon-by-id">;
 
+const PokemonListing: React.FC<{
+  pokemon: PokemonFromServer;
+  vote: () => void;
+}> = ({ pokemon, vote }) => {
+  return (
+    <div className="flex flex-col items-center">
+      <img className="w-64 h-64" src={pokemon.sprites.front_default} />
+      <div className="text-xl text-center pb-4 capitalize mt-[-2rem]">
+        {pokemon.name}
+      </div>
+      <button className={btn} onClick={vote}>
+        Rounder
+      </button>
+    </div>
+  );
+};
+
 const Home = ({
   firstId,
   secondId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [[first, second], updateIds] = useState([firstId, secondId]);
+
   const { data: firstPokemon } = trpc.useQuery([
     "get-pokemon-by-id",
-    { id: firstId },
+    { id: first },
   ]);
   const { data: secondPokemon } = trpc.useQuery([
     "get-pokemon-by-id",
-    { id: secondId },
+    { id: second },
   ]);
+  const voteMutation = trpc.useMutation(["cast-vote"]);
 
   if (!firstPokemon || !secondPokemon) return null;
 
   const voteForRoundest = (selected: PokemonFromServer["id"]) => {
-    // updateIds()
+    if (selected === first) {
+      voteMutation.mutate({ votedFor: first, votedAgainst: second });
+    } else voteMutation.mutate({ votedFor: second, votedAgainst: first });
+
+    updateIds(getOptionsForVote());
   };
 
   return (
@@ -70,20 +95,3 @@ export const getServerSideProps = async () => {
 };
 
 export default Home;
-
-const PokemonListing: React.FC<{
-  pokemon: PokemonFromServer;
-  vote: () => void;
-}> = ({ pokemon, vote }) => {
-  return (
-    <div className="flex flex-col items-center">
-      <img className="w-64 h-64" src={pokemon.sprites.front_default} />
-      <div className="text-xl text-center pb-4 capitalize mt-[-2rem]">
-        {pokemon.name}
-      </div>
-      <button className={btn} onClick={vote}>
-        Rounder
-      </button>
-    </div>
-  );
-};
