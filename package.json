@@ -8,9 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "prisma generate",
-    "backend": "pscale connect pokemon-survey main --port 3309",
-    "shadow": "pscale connect pokemon-survey main --port 3310",
-    "migrate": "prisma migrate dev",
+    "backend": "pscale connect pokemon-survey dev --port 3309",
+    "migrate": "prisma db push",
     "dbview": "prisma studio"
   },
   "dependencies": {
