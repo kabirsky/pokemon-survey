@@ -1,10 +1,11 @@
+import { useState } from "react";
 import type { InferGetServerSidePropsType } from "next";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { getOptionsForVote } from "@/utils/getRandomPokemon";
 import { trpc } from "@/utils/trpc";
 import { appRouter } from "@/backend/router";
 import { inferQueryResponse } from "./api/trpc/[trpc]";
-import { useState } from "react";
+import Image from "next/image";
 
 const btn =
   "inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2, focus:ring-indigo-500";
@@ -17,9 +18,11 @@ const PokemonListing: React.FC<{
 }> = ({ pokemon, vote }) => {
   return (
     <div className="flex flex-col items-center">
-      <img
-        className="w-64 h-64"
-        src={pokemon.sprites.front_default ?? undefined}
+      <Image
+        width={256}
+        height={256}
+        src={pokemon.sprites.front_default || ""}
+        alt={pokemon.name}
       />
       <div className="text-xl text-center pb-4 capitalize mt-[-2rem]">
         {pokemon.name}
