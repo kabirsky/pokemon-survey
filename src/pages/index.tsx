@@ -73,7 +73,7 @@ const Home = ({
 
         <PokemonListing
           pokemon={secondPokemon}
-          vote={() => voteForRoundest(firstPokemon.id)}
+          vote={() => voteForRoundest(secondPokemon.id)}
         />
       </div>
     </div>
