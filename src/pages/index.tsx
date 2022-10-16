@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { InferGetServerSidePropsType } from "next";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { getOptionsForVote } from "@/utils/getRandomPokemon";
@@ -14,11 +14,17 @@ const btn =
 
 type PokemonFromServer = inferQueryResponse<"get-pokemon-by-id">;
 
-type PokemonListingProps = {
-  loading?: boolean;
-  pokemon?: PokemonFromServer;
+type PokemonListingLoading = {
+  loading: true;
+  pokemon?: unknown;
+  vote?: undefined;
+};
+type PokemonListingLoaded = {
+  loading?: false;
+  pokemon: PokemonFromServer;
   vote: () => void;
 };
+type PokemonListingProps = PokemonListingLoading | PokemonListingLoaded;
 
 const PokemonListing: React.FC<PokemonListingProps> = ({
   loading,
@@ -33,13 +39,13 @@ const PokemonListing: React.FC<PokemonListingProps> = ({
         <Image
           width={256}
           height={256}
-          src={pokemon?.spriteUrl || ""}
-          alt={pokemon?.name}
+          src={pokemon.spriteUrl || ""}
+          alt={pokemon.name}
         />
       )}
 
       <div className="text-xl text-center pb-4 capitalize mt-[-2rem]">
-        {loading ? "loading" : pokemon?.name}
+        {loading ? "loading" : pokemon.name}
       </div>
       <button className={btn} onClick={vote} disabled={loading}>
         Rounder
@@ -65,32 +71,44 @@ const Home = ({
     secondPokemon.data
   );
 
-  const voteForRoundest = (selected: PokemonFromServer["id"]) => {
-    if (selected === first) {
-      voteMutation.mutate({ votedForId: first, votedAgainstId: second });
-    } else voteMutation.mutate({ votedForId: second, votedAgainstId: first });
+  const voteForRoundest = useCallback(
+    (selected: PokemonFromServer["id"]) => {
+      if (selected === first) {
+        voteMutation.mutate({ votedForId: first, votedAgainstId: second });
+      } else voteMutation.mutate({ votedForId: second, votedAgainstId: first });
 
-    updateIds(getOptionsForVote());
-  };
+      updateIds(getOptionsForVote());
+    },
+    [first, second, voteMutation]
+  );
+
+  const voteFirst = useCallback(
+    () => firstPokemon.data && voteForRoundest(firstPokemon.data.id),
+    [firstPokemon.data, voteForRoundest]
+  );
+  const voteSecond = useCallback(
+    () => secondPokemon.data && voteForRoundest(secondPokemon.data.id),
+    [secondPokemon.data, voteForRoundest]
+  );
 
   if (!firstPokemon || !secondPokemon) return null;
   return (
     <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
       <div className="text-2xl text-center">Which Pokémon is rounder?</div>
       <div className="border rounded p-8 flex justify-between max-w-2xl items-center">
-        <PokemonListing
-          loading={!dataLoaded}
-          pokemon={firstPokemon.data}
-          vote={() => dataLoaded && voteForRoundest(firstPokemon.data.id)}
-        />
+        {dataLoaded ? (
+          <PokemonListing pokemon={firstPokemon.data} vote={voteFirst} />
+        ) : (
+          <PokemonListing loading />
+        )}
 
         <div className="p-8">vs</div>
 
-        <PokemonListing
-          loading={!dataLoaded}
-          pokemon={secondPokemon.data}
-          vote={() => dataLoaded && voteForRoundest(secondPokemon.data.id)}
-        />
+        {dataLoaded ? (
+          <PokemonListing pokemon={secondPokemon.data} vote={voteSecond} />
+        ) : (
+          <PokemonListing loading />
+        )}
       </div>
 
       <div className="absolute bottom-0 w-full text-xl text-center pb-2">
