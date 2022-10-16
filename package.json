@@ -10,7 +10,8 @@
     "generate": "prisma generate",
     "backend": "pscale connect pokemon-survey dev --port 3309",
     "migrate": "prisma db push",
-    "dbview": "prisma studio"
+    "dbview": "prisma studio",
+    "backfill-db":"ts-node -O '{\"module\":\"commonjs\"}' ./scripts/fill-db.ts"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
