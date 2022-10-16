@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import { appRouter } from "@/backend/router";
 import { inferQueryResponse } from "./api/trpc/[trpc]";
 import Image from "next/future/image";
+import Link from "next/link";
 
 const btn =
   "inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2, focus:ring-indigo-500";
@@ -75,6 +76,9 @@ const Home = ({
           pokemon={secondPokemon}
           vote={() => voteForRoundest(secondPokemon.id)}
         />
+      </div>
+      <div className="absolute bottom-0 w-full text-xl text-center pb-2">
+        <Link href="/results">Results(refresh every minute)</Link>
       </div>
     </div>
   );
