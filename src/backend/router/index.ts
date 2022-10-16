@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/backend/utils/prisma";
 
 import { PokemonClient } from "pokenode-ts";
+import { MAX_DEX_ID } from "@/constants";
 
 export const appRouter = trpc
   .router()
@@ -18,8 +19,8 @@ export const appRouter = trpc
   })
   .mutation("cast-vote", {
     input: z.object({
-      votedFor: z.number(),
-      votedAgainst: z.number(),
+      votedForId: z.number().max(MAX_DEX_ID),
+      votedAgainstId: z.number().max(MAX_DEX_ID),
     }),
     async resolve({ input }) {
       const voteInDb = await prisma.vote.create({

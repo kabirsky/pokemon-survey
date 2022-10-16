@@ -5,7 +5,7 @@ import { getOptionsForVote } from "@/utils/getRandomPokemon";
 import { trpc } from "@/utils/trpc";
 import { appRouter } from "@/backend/router";
 import { inferQueryResponse } from "./api/trpc/[trpc]";
-import Image from "next/image";
+import Image from "next/future/image";
 
 const btn =
   "inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2, focus:ring-indigo-500";
@@ -54,8 +54,8 @@ const Home = ({
 
   const voteForRoundest = (selected: PokemonFromServer["id"]) => {
     if (selected === first) {
-      voteMutation.mutate({ votedFor: first, votedAgainst: second });
-    } else voteMutation.mutate({ votedFor: second, votedAgainst: first });
+      voteMutation.mutate({ votedForId: first, votedAgainstId: second });
+    } else voteMutation.mutate({ votedForId: second, votedAgainstId: first });
 
     updateIds(getOptionsForVote());
   };
