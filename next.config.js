@@ -4,9 +4,6 @@ const nextConfig = {
   images: {
     domains: ["raw.githubusercontent.com"],
   },
-  experimental: {
-    images: { allowFutureImage: true },
-  },
 };
 
 module.exports = nextConfig;

@@ -11,32 +11,32 @@
     "backend": "pscale connect pokemon-survey dev --port 3309",
     "migrate": "prisma db push",
     "dbview": "prisma studio",
-    "backfill-db":"ts-node -O '{\"module\":\"commonjs\"}' ./scripts/fill-db.ts"
+    "backfill-db": "ts-node -O '{\"module\":\"commonjs\"}' ./scripts/fill-db.ts"
   },
   "dependencies": {
-    "@prisma/client": "^4.0.0",
-    "@trpc/client": "^9.25.3",
-    "@trpc/next": "^9.25.3",
-    "@trpc/react": "^9.25.3",
-    "@trpc/server": "^9.25.3",
-    "next": "12.2.0",
-    "pokenode-ts": "^1.14.0",
+    "@prisma/client": "^4.4.0",
+    "@trpc/client": "^9.27.4",
+    "@trpc/next": "^9.27.4",
+    "@trpc/react": "^9.27.4",
+    "@trpc/server": "^9.27.4",
+    "next": "12.3.1",
+    "pokenode-ts": "^1.17.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-query": "^3.39.1",
-    "zod": "^3.17.3"
+    "react-query": "^3.39.2",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
-    "@types/node": "18.0.0",
-    "@types/react": "18.0.14",
-    "@types/react-dom": "18.0.5",
-    "autoprefixer": "^10.4.7",
-    "eslint": "8.18.0",
-    "eslint-config-next": "12.2.0",
-    "postcss": "^8.4.14",
-    "prettier-plugin-prisma": "^3.14.0",
-    "prisma": "^4.0.0",
-    "tailwindcss": "^3.1.4",
-    "typescript": "4.7.4"
+    "@types/node": "18.11.0",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "autoprefixer": "^10.4.12",
+    "eslint": "8.25.0",
+    "eslint-config-next": "12.3.1",
+    "postcss": "^8.4.18",
+    "prettier-plugin-prisma": "^4.4.0",
+    "prisma": "^4.4.0",
+    "tailwindcss": "^3.1.8",
+    "typescript": "4.8.4"
   }
 }
