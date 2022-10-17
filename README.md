@@ -1,18 +1,4 @@
 # Pokemon Survey
 
 Quite stupid survey created for self-learning purpose
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-```
-
-## TODO
-
-- [ ] Use next/image to handle image caching and better rendering
-- [ ] Maybe move images to bulbapedia
-- [ ] Persist data fetched from PokemonAPI
-- [ ] Create the results page with counting/sorting
+Most of the code was done by Theo, I've done some modifications for self-learning purpose, go see original repository: https://github.com/TheoBr/roundest-mon
