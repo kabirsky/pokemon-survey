@@ -113,6 +113,14 @@ const Home = ({
 
       <div className="absolute bottom-0 w-full text-xl text-center pb-2">
         <Link href="/results">Results(refresh every minute)</Link>
+        {" | "}
+        <a
+          href="https://github.com/kabirsky/pokemon-survey"
+          target={"_blank"}
+          rel="noreferrer"
+        >
+          Github
+        </a>
       </div>
     </div>
   );
