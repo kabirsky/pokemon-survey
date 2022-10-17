@@ -1,5 +1,6 @@
 MIT License
 
+Copyright (c) 2022 Theo Browne
 Copyright (c) 2022 Kirill Efimov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
