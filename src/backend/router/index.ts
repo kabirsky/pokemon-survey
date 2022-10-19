@@ -8,7 +8,7 @@ import { MAX_DEX_ID } from "@/constants";
 export const appRouter = trpc
   .router()
   .query("get-pokemon-by-id", {
-    input: z.object({ id: z.number() }),
+    input: z.object({ id: z.number().max(MAX_DEX_ID) }),
     async resolve({ input }) {
       const pokemon = await prisma.pokemon.findFirst({
         where: { id: input.id },
