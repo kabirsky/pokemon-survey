@@ -9,7 +9,9 @@ type PokemonQueryResult = AsyncReturnType<typeof getPokemonInOrder>;
 const generateCountPercent = (pokemon: PokemonQueryResult[number]) => {
   const { votesFor, votesAgainst } = pokemon._count;
   if (votesFor + votesAgainst === 0) return 0;
-  return (votesFor / (votesFor + votesAgainst)) * 100;
+  const percent = (votesFor / (votesFor + votesAgainst)) * 100;
+  const formattedPercent = Math.floor(percent * 100) / 100;
+  return formattedPercent;
 };
 
 const PokemonListing: React.FC<{ pokemon: PokemonQueryResult[number] }> = ({
