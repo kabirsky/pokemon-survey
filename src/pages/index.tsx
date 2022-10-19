@@ -133,14 +133,14 @@ const Home = ({
 
       <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
         <div className="text-2xl text-center">Which Pokémon is rounder?</div>
-        <div className="border rounded p-8 flex justify-between max-w-2xl items-center">
+        <div className="border rounded p-8 flex flex-col md:flex-row justify-between max-w-2xl items-center">
           {dataLoaded ? (
             <PokemonListing pokemon={firstPokemon.data} vote={voteFirst} />
           ) : (
             <PokemonListing loading />
           )}
 
-          <div className="p-8">vs</div>
+          <div className="p-8 hidden md:block">vs</div>
 
           {dataLoaded ? (
             <PokemonListing pokemon={secondPokemon.data} vote={voteSecond} />
