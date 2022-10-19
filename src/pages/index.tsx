@@ -9,6 +9,7 @@ import Image from "next/future/image";
 import Link from "next/link";
 import React from "react";
 import ImagePreload from "@/components";
+import Head from "next/head";
 
 const btn =
   "inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2, focus:ring-indigo-500";
@@ -120,7 +121,16 @@ const Home = ({
   if (!firstPokemon || !secondPokemon) return null;
   return (
     <>
+      <Head>
+        <title>Which Pokémon is rounder?</title>
+        <meta
+          name="description"
+          content="Quite useless survey about roundness of pokémons"
+        />
+      </Head>
+
       <ImagePreload images={nextPokemons} />
+
       <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
         <div className="text-2xl text-center">Which Pokémon is rounder?</div>
         <div className="border rounded p-8 flex justify-between max-w-2xl items-center">
