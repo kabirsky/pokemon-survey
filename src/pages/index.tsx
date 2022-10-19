@@ -8,6 +8,7 @@ import { inferQueryResponse } from "./api/trpc/[trpc]";
 import Image from "next/future/image";
 import Link from "next/link";
 import React from "react";
+import ImagePreload from "@/components";
 
 const btn =
   "inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2, focus:ring-indigo-500";
@@ -56,17 +57,30 @@ const PokemonListing: React.FC<PokemonListingProps> = ({
 };
 
 const Home = ({
-  firstId,
-  secondId,
+  current,
+  next,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [[first, second], updateIds] = useState([firstId, secondId]);
+  const [currentPokemons, updateIds] = useState<[number, number]>([
+    current.firstId,
+    current.secondId,
+  ]);
+  const [nextPokemons, updateNextIds] = useState<[number, number]>([
+    next.firstId,
+    next.secondId,
+  ]);
 
-  const firstPokemon = trpc.useQuery(["get-pokemon-by-id", { id: first }]);
-  const secondPokemon = trpc.useQuery(["get-pokemon-by-id", { id: second }]);
+  const firstPokemon = trpc.useQuery([
+    "get-pokemon-by-id",
+    { id: currentPokemons[0] },
+  ]);
+  const secondPokemon = trpc.useQuery([
+    "get-pokemon-by-id",
+    { id: currentPokemons[1] },
+  ]);
+  trpc.useQuery(["get-pokemon-by-id", { id: nextPokemons[0] }]);
+  trpc.useQuery(["get-pokemon-by-id", { id: nextPokemons[1] }]);
+
   const voteMutation = trpc.useMutation(["cast-vote"]);
-
-  // const image = trpc.useQuery(["get-pokemon-image", { id: firstId }]);
-  // console.log(image);
 
   const dataLoaded = !!(
     !firstPokemon.isLoading &&
@@ -77,13 +91,21 @@ const Home = ({
 
   const voteForRoundest = useCallback(
     (selected: PokemonFromServer["id"]) => {
-      if (selected === first) {
-        voteMutation.mutate({ votedForId: first, votedAgainstId: second });
-      } else voteMutation.mutate({ votedForId: second, votedAgainstId: first });
+      if (selected === currentPokemons[0]) {
+        voteMutation.mutate({
+          votedForId: currentPokemons[0],
+          votedAgainstId: currentPokemons[1],
+        });
+      } else
+        voteMutation.mutate({
+          votedForId: currentPokemons[1],
+          votedAgainstId: currentPokemons[0],
+        });
 
-      updateIds(getOptionsForVote());
+      updateIds(nextPokemons);
+      updateNextIds(getOptionsForVote());
     },
-    [first, second, voteMutation]
+    [currentPokemons, nextPokemons, voteMutation]
   );
 
   const voteFirst = useCallback(
@@ -97,36 +119,39 @@ const Home = ({
 
   if (!firstPokemon || !secondPokemon) return null;
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
-      <div className="text-2xl text-center">Which Pokémon is rounder?</div>
-      <div className="border rounded p-8 flex justify-between max-w-2xl items-center">
-        {dataLoaded ? (
-          <PokemonListing pokemon={firstPokemon.data} vote={voteFirst} />
-        ) : (
-          <PokemonListing loading />
-        )}
+    <>
+      <ImagePreload images={nextPokemons} />
+      <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
+        <div className="text-2xl text-center">Which Pokémon is rounder?</div>
+        <div className="border rounded p-8 flex justify-between max-w-2xl items-center">
+          {dataLoaded ? (
+            <PokemonListing pokemon={firstPokemon.data} vote={voteFirst} />
+          ) : (
+            <PokemonListing loading />
+          )}
 
-        <div className="p-8">vs</div>
+          <div className="p-8">vs</div>
 
-        {dataLoaded ? (
-          <PokemonListing pokemon={secondPokemon.data} vote={voteSecond} />
-        ) : (
-          <PokemonListing loading />
-        )}
+          {dataLoaded ? (
+            <PokemonListing pokemon={secondPokemon.data} vote={voteSecond} />
+          ) : (
+            <PokemonListing loading />
+          )}
+        </div>
+
+        <div className="absolute bottom-0 w-full text-xl text-center pb-2">
+          <Link href="/results">Results(refresh every minute)</Link>
+          {" | "}
+          <a
+            href="https://github.com/kabirsky/pokemon-survey"
+            target={"_blank"}
+            rel="noreferrer"
+          >
+            Github
+          </a>
+        </div>
       </div>
-
-      <div className="absolute bottom-0 w-full text-xl text-center pb-2">
-        <Link href="/results">Results(refresh every minute)</Link>
-        {" | "}
-        <a
-          href="https://github.com/kabirsky/pokemon-survey"
-          target={"_blank"}
-          rel="noreferrer"
-        >
-          Github
-        </a>
-      </div>
-    </div>
+    </>
   );
 };
 
@@ -137,15 +162,25 @@ export const getServerSideProps = async () => {
   });
 
   const [firstId, secondId] = getOptionsForVote();
+  const [nextFirstId, nextSecondId] = getOptionsForVote();
 
   await ssg.fetchQuery("get-pokemon-by-id", { id: firstId });
   await ssg.fetchQuery("get-pokemon-by-id", { id: secondId });
 
+  await ssg.fetchQuery("get-pokemon-by-id", { id: nextFirstId });
+  await ssg.fetchQuery("get-pokemon-by-id", { id: nextSecondId });
+
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      firstId,
-      secondId,
+      current: {
+        firstId,
+        secondId,
+      },
+      next: {
+        firstId: nextFirstId,
+        secondId: nextSecondId,
+      },
     },
   };
 };
