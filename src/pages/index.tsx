@@ -8,54 +8,10 @@ import { inferQueryResponse } from "./api/trpc/[trpc]";
 import Image from "next/future/image";
 import Link from "next/link";
 import React from "react";
-import ImagePreload from "@/components";
+import ImagePreload from "@/components/ImagePreload";
 import Head from "next/head";
-
-const btn =
-  "inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2, focus:ring-indigo-500";
-
-type PokemonFromServer = inferQueryResponse<"get-pokemon-by-id">;
-
-type PokemonListingLoading = {
-  loading: true;
-  pokemon?: unknown;
-  vote?: undefined;
-};
-type PokemonListingLoaded = {
-  loading?: false;
-  pokemon: PokemonFromServer;
-  vote: () => void;
-};
-type PokemonListingProps = PokemonListingLoading | PokemonListingLoaded;
-
-const PokemonListing: React.FC<PokemonListingProps> = ({
-  loading,
-  pokemon,
-  vote,
-}) => {
-  return (
-    <div className="flex flex-col items-center">
-      {loading ? (
-        <Image width={256} height={256} src="/loading.svg" alt="loading" />
-      ) : (
-        <Image
-          width={256}
-          height={256}
-          src={`/api/image/${pokemon.id}` || ""}
-          alt={pokemon.name}
-          priority
-        />
-      )}
-
-      <div className="text-xl text-center pb-4 capitalize mt-[-2rem]">
-        {loading ? "loading" : pokemon.name}
-      </div>
-      <button className={btn} onClick={vote} disabled={loading}>
-        Rounder
-      </button>
-    </div>
-  );
-};
+import VoteForm from "@/components/VoteForm";
+import { PokemonFromServer } from "@/utils/types";
 
 const Home = ({
   current,
@@ -133,21 +89,15 @@ const Home = ({
 
       <div className="h-screen w-screen flex flex-col justify-center items-center gap-2">
         <div className="text-2xl text-center">Which Pokémon is rounder?</div>
-        <div className="border rounded p-8 flex flex-col md:flex-row justify-between max-w-2xl items-center">
-          {dataLoaded ? (
-            <PokemonListing pokemon={firstPokemon.data} vote={voteFirst} />
-          ) : (
-            <PokemonListing loading />
-          )}
 
-          <div className="p-8 hidden md:block">vs</div>
-
-          {dataLoaded ? (
-            <PokemonListing pokemon={secondPokemon.data} vote={voteSecond} />
-          ) : (
-            <PokemonListing loading />
-          )}
-        </div>
+        {dataLoaded ? (
+          <VoteForm
+            data={[firstPokemon.data, secondPokemon.data]}
+            voteFor={[voteFirst, voteSecond]}
+          />
+        ) : (
+          <VoteForm loading />
+        )}
 
         <div className="absolute bottom-0 w-full text-xl text-center pb-2">
           <Link href="/results">Results(refresh every minute)</Link>

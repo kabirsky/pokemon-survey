@@ -1,6 +1,6 @@
 import type { GetServerSideProps } from "next";
 import { prisma } from "@/backend/utils/prisma";
-import { AsyncReturnType } from "@/utils/ts-bs";
+import { AsyncReturnType } from "@/utils/types";
 import Image from "next/future/image";
 import Head from "next/head";
 
