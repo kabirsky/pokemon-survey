@@ -2,7 +2,7 @@
 import { MAX_DEX_ID } from "@/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = Response;
+type Data = ReadableStream<Uint8Array> | null;
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,5 +16,5 @@ export default async function handler(
   const data = await fetch(
     `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
   );
-  res.send(data);
+  res.send(data.body);
 }
