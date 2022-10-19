@@ -3,7 +3,7 @@ import Image from "next/future/image";
 // Apparently NextJS can't just preload images that not rendered yet, so we force him to do that with this hack
 const ImagePreload: React.FC<{ images: number[] }> = ({ images }) => {
   return (
-    <div className="absolute invisible">
+    <div className="absolute hidden">
       <span>Damn why you looked here :(</span>
       {images.map((image) => (
         <Image
