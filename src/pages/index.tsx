@@ -39,8 +39,9 @@ const PokemonListing: React.FC<PokemonListingProps> = ({
         <Image
           width={256}
           height={256}
-          src={pokemon.spriteUrl || ""}
+          src={`/api/image/${pokemon.id}` || ""}
           alt={pokemon.name}
+          priority
         />
       )}
 
@@ -63,6 +64,9 @@ const Home = ({
   const firstPokemon = trpc.useQuery(["get-pokemon-by-id", { id: first }]);
   const secondPokemon = trpc.useQuery(["get-pokemon-by-id", { id: second }]);
   const voteMutation = trpc.useMutation(["cast-vote"]);
+
+  // const image = trpc.useQuery(["get-pokemon-image", { id: firstId }]);
+  // console.log(image);
 
   const dataLoaded = !!(
     !firstPokemon.isLoading &&
